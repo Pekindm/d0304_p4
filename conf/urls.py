@@ -16,16 +16,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from stephunter.views import main_view
-from stephunter.views import vacancies_view
-from stephunter.views import specialization_view
-from stephunter.views import company_view
-from stephunter.views import vacancy_view
+from stephunter.views import MainView
+from stephunter.views import VacanciesView
+from stephunter.views import VacanciesSpecView
+from stephunter.views import CompanyView
+from stephunter.views import VacancyView
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', main_view, name='index'),
-    path('vacancies/', vacancies_view, name='vacancies'),
-    path('vacancies/cat/<str:vac_spec>/', specialization_view, name='vac_spec'),
-    path('companies/<int:id>/', company_view, name='company'),
-    path('vacancies/<int:id>/', vacancy_view, name='vacancy'),
+    path('', MainView.as_view(), name='index'),
+    path('vacancies/', VacanciesView.as_view(), name='vacancies'),
+    path('vacancies/cat/<str:vac_spec>/', VacanciesSpecView.as_view(), name='vac_spec'),
+    path('companies/<int:id>/', CompanyView.as_view(), name='company'),
+    path('vacancies/<int:id>/', VacancyView.as_view(), name='vacancy'),
 ]

@@ -1,62 +1,63 @@
 from django.conf import settings
-from django.shortcuts import render
-from django.views import View
+from django.shortcuts import render, get_object_or_404
+from django.views.generic import View, ListView
 from stephunter.models import Specialty, Company, Vacancy
 from django.db.models import Count
 from django.http import Http404
 
 
-def main_view(request):
-    try:
-        context = {
-            "specialties": Specialty.objects.annotate(count_vacancies=Count('vacancies')),
-            "companies": Company.objects.annotate(count_vacancies=Count('vacancies')),
-            "vacancies": Vacancy.objects.all(),
-        }
-    except KeyError:
-        raise Http404
-    return render(request, 'stephunter/index.html', context=context)
+class MainView(View):
+    def get(self, request):
+        specialties = Specialty.objects.annotate(count_vacancies=Count('vacancies'))
+        companies = Company.objects.annotate(count_vacancies=Count('vacancies'))
+        return render(request, 'stephunter/index.html', context={
+            "specialties": specialties,
+            "companies": companies,
+        })
 
 
-def vacancies_view(request):
-    try:
-        context = {
-            "spec": "Все вакансии",
-            "vacancies": Vacancy.objects.all(),
-            "companies": Company.objects.annotate(count_vacancies=Count('vacancies')),
-        }
-    except KeyError:
-        raise Http404
-    return render(request, 'stephunter/vacancies.html', context=context)
+class VacanciesView(View):
+    def get(self, request):
+        title = "Все вакансии"
+        vacancies = Vacancy.objects.all()
+        return render(request, 'stephunter/vacancies.html', context={
+            "title": title,
+            "vacancies": vacancies,
+        })
 
 
-def specialization_view(request, vac_spec):
-    try:
-        context = {
-            "spec": Specialty.objects.get(code=vac_spec).title,
-            "vacancies": Vacancy.objects.filter(specialty=Specialty.objects.get(code=vac_spec).id),
-        }
-    except KeyError:
-        raise Http404
-    return render(request, 'stephunter/vacancies.html', context=context)
+class VacanciesSpecView(View):
+    def get(self, request, vac_spec):
+        try:
+            title = Specialty.objects.get(code=vac_spec).title
+            vacancies = Vacancy.objects.filter(specialty=Specialty.objects.get(code=vac_spec).id)
+        except KeyError:
+            raise Http404
+        return render(request, 'stephunter/vacancies.html', context={
+            "title": title,
+            "vacancies": vacancies,
+        })
 
 
-def company_view(request, id):
-    try:
-        context = {
-            "company": Company.objects.annotate(count_vacancies=Count('vacancies')).get(id=id),
-            "vacancies": Vacancy.objects.filter(company=id),
-        }
-    except KeyError:
-        raise Http404
-    return render(request, 'stephunter/company.html', context=context)
+class CompanyView(View):
+    def get(self, request, id):
+        try:
+            company = Company.objects.annotate(count_vacancies=Count('vacancies')).get(id=id)
+            vacancies = Vacancy.objects.filter(company=id)
+        except KeyError:
+            raise Http404
+        return render(request, 'stephunter/company.html', context={
+            "company": company,
+            "vacancies": vacancies,
+        })
 
 
-def vacancy_view(request, id):
-    try:
-        context = {
-            "vacancy": Vacancy.objects.get(id=id),
-        }
-    except KeyError:
-        raise Http404
-    return render(request, 'stephunter/vacancy.html', context=context)
+class VacancyView(View):
+    def get(self, request, id):
+        try:
+            vacancy = Vacancy.objects.get(id=id)
+        except KeyError:
+            raise Http404
+        return render(request, 'stephunter/vacancy.html', context={
+            "vacancy": vacancy,
+        })
