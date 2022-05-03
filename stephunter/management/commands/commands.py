@@ -11,7 +11,6 @@ class Command(BaseCommand):
             if Specialty.objects.filter(code=specialty["code"]).count() == 0:
                 new_specialty = Specialty(code=specialty["code"],
                                           title=specialty["title"],
-                                          picture="https://place-hold.it/100x60"
                                           )
                 new_specialty.save()
 
@@ -20,7 +19,6 @@ class Command(BaseCommand):
             new_company = Company(id=company["id"],
                                   name=company["title"],
                                   location=company["location"],
-                                  logo="https://place-hold.it/100x60",
                                   description=company["description"],
                                   employee_count=int(company["employee_count"])
                                   )
