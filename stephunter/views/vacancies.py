@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import View
 from stephunter.models import Specialty, Vacancy, Application
 from django.http import Http404
-from stephunter.forms import SendApplicationForm
 from django.contrib.auth.models import User
+from stephunter.forms import SendApplicationForm
 
 
 class VacanciesView(View):

@@ -2,10 +2,10 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.views.generic import View
-from stephunter.models import Company, Vacancy, Application
 from django.db.models import Count
-from stephunter.forms import VacancyForm
 from django.utils import timezone
+from stephunter.models import Company, Vacancy, Application
+from stephunter.forms import VacancyForm
 
 
 class MyVacanciesView(View):
